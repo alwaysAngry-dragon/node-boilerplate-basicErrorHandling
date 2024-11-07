@@ -55,6 +55,19 @@ const globalErrorHandler = (err, req, res, next) => {
       error = validationErrorDB(err);
     }
 
+    if (err.name === 'JsonWebTokenError') {
+      error = new AppError(
+        'Invalid token. Please Login in again',
+        401
+      );
+    }
+    if (err.name === 'TokenExpiredError') {
+      error = new AppError(
+        'Session expired. Please Login in again',
+        401
+      );
+    }
+
     sendErrorProduction(error, res);
   }
 };

@@ -66,6 +66,12 @@
 
 - it acts on the currently processed query. 'this' will refer to the current processed query. We can then modify the query.
 
+> Instance methods:
+
+- are available on the documents of a collection and are defined using the schema
+  example: userSchema.methods.checkPassowrd = function(){....}
+  user.checkPassowrd()
+
 > Aggregate middlewares
 
 > Modles middlewares
@@ -108,3 +114,10 @@ Data Validators → Pre Middlewares → Virtual Properties → Post Middlewares
   console.error('Unhandled Exception:', error);
   // Optionally, perform cleanup or restart the server
   });
+
+#
+
+> Passwords saving
+
+- Always save encrypted passwords into the database
+- Implement forgot password feature also.
