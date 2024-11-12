@@ -1,6 +1,7 @@
 const path = require('path');
 const morgan = require('morgan');
 const express = require('express');
+const cookieParser = require('cookie-parser');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -12,6 +13,9 @@ const app = express();
 if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));
 }
+
+app.use(cookieParser());
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 

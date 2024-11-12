@@ -29,7 +29,11 @@ router
 router
   .route('/:tourID')
   .get(tourController.getATour)
-  .patch(tourController.updateTour)
+  .patch(
+    authController.protect,
+    authController.restrictTo('admin'),
+    tourController.updateTour
+  )
   .delete(tourController.deleteTour);
 
 module.exports = router;

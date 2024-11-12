@@ -48,6 +48,15 @@
   return false means error
   return true means success
 
+- .save() and create:
+  note whenever we use save() or create the validators run by default
+
+-- In Mongoose, when using findByIdAndUpdate with { runValidators: true }, only the validators for the fields being updated are run. This behavior aligns with the fact that Mongoose doesn’t apply validators to fields that are not in the update payload.
+
+For example, if you have a schema with fields name, email, and age but are only updating name, Mongoose will only run validators on name and ignore the others. Validators for email and age will not be triggered in this operation.
+
+If you want to ensure all validators run on all fields (even if they aren't being updated), you would need to manually load the document, update the fields, and then call .save():
+
 ##
 
 > Virtual properties:
@@ -119,5 +128,8 @@ Data Validators → Pre Middlewares → Virtual Properties → Post Middlewares
 
 > Passwords saving
 
-- Always save encrypted passwords into the database
-- Implement forgot password feature also.
+- Always save encrypted passwords into the database, using a strong library like bcrypt
+- Implement forgot password feature also:
+  -- Forgot password route
+  -- Send reset password mail
+  -- Password reset route
