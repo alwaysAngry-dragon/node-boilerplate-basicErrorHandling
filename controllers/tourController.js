@@ -197,6 +197,9 @@ exports.getMonthlyPlan = async (req, res, next) => {
   });
 };
 
+// GEO SPATIAL QUERY
+// NOTE: The geo spatial field needs to be index
+// The location data is stored as longitude, latitude in mongodb
 exports.getTourWithinDistance = catchCaAsync(
   async function (req, res, next) {
     const { distance, latlng, unit } = req.params;
