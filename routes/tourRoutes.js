@@ -36,4 +36,10 @@ router
   )
   .delete(tourController.deleteTour);
 
+router
+  .route(
+    '/get-tours-within/distance/:distance/latlng/:latlng/unit/:unit'
+  )
+  .get(tourController.getTourWithinDistance);
+
 module.exports = router;

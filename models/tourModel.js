@@ -80,6 +80,37 @@ const tourSechema = new mongoose.Schema(
       select: false,
     },
     startDates: [Date],
+    startLocation: {
+      // GeoJSON
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point'],
+      },
+      coordinates: [Number], // longitude, latitude,
+      address: String,
+      description: String,
+    },
+    locations: [
+      // this is an array of embedded geo location document
+      {
+        type: {
+          type: String,
+          default: 'Point',
+          enum: ['Point'],
+        },
+        coordinates: [Number],
+        address: String,
+        description: String,
+        day: Number,
+      },
+    ],
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },
@@ -87,9 +118,20 @@ const tourSechema = new mongoose.Schema(
   }
 );
 
+tourSechema.index({ name: 1 });
+tourSechema.index({ startLocation: '2dsphere' });
+
 tourSechema.virtual('durationWeeks').get(function () {
   // console.log('Running virtual for each document');
   return this.duration / 7;
+});
+
+// virtual populate
+tourSechema.virtual('reviews', {
+  ref: 'Review',
+  localField: '_id',
+  foreignField: 'tour',
+  justOne: false, // if true, it will return only one document from the reviews array
 });
 
 tourSechema.pre('save', function (next) {
@@ -100,12 +142,15 @@ tourSechema.pre('save', function (next) {
 });
 
 tourSechema.pre('find', function (next) {
-  console.log('Pre find middleware...query executed');
+  console.log('Pre find tour middleware...query executed');
   next();
 });
 
 tourSechema.pre('findOne', function (next) {
-  console.log('Pre find One middleware...query executed');
+  console.log(
+    'Pre find tour One middleware...query executed'
+  );
+  console.log(this);
   next();
 });
 

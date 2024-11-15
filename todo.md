@@ -61,7 +61,7 @@ If you want to ensure all validators run on all fields (even if they aren't bein
 
 > Virtual properties:
 
-- we cannot request virtual properties as they are not persisted in the database
+- we cannot request virtual properties, ie query on them as they are not persisted in the database
 
 ##
 
@@ -74,6 +74,13 @@ If you want to ensure all validators run on all fields (even if they aren't bein
 > Query middlewares (pre, post - find, findOne etc, has to be specified):
 
 - it acts on the currently processed query. 'this' will refer to the current processed query. We can then modify the query.
+- note in post query schema as the query is already executed, 'this' will still refer to the query object
+
+  > Statis methods:
+
+- static methods can be called on the models
+  examples: Tour.getStatuc()
+  the value of 'this' in static methods is the model
 
 > Instance methods:
 
@@ -86,6 +93,7 @@ If you want to ensure all validators run on all fields (even if they aren't bein
 > Modles middlewares
 
 Data Validators → Pre Middlewares → Virtual Properties → Post Middlewares
+Note: virtual properties might run in validators, or other places when the document is reffered like using 'this'
 
 ##
 
@@ -125,6 +133,11 @@ Data Validators → Pre Middlewares → Virtual Properties → Post Middlewares
   });
 
 #
+
+> Populate
+
+- Does populate executes additional queries
+  --- Yes populate executes additional find queries on the collection it is being reffered to.
 
 > Passwords saving
 

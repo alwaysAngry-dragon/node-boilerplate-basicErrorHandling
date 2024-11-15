@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
   photo: String,
   role: {
     type: String,
-    enum: ['user', 'admin'],
+    enum: ['user', 'admin', 'guide', 'lead-guide'],
     default: 'user',
   },
   password: {
@@ -67,6 +67,13 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+// pre find query middleware
+
+userSchema.pre(/^find/, function (next) {
+  console.log('---- The user find query middleware -----');
+  next();
+});
+
 // Instance method
 userSchema.methods.checkPassword = async function (
   userPassword,
@@ -106,6 +113,7 @@ userSchema.methods.createPasswordResetToken =
       .update(resetToken)
       .digest('hex');
 
+    // expiry after 10 minutes
     this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
 
     return resetToken;

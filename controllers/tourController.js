@@ -36,7 +36,7 @@ exports.getAllTours = catchCaAsync(async (req, res) => {
     .project()
     .pagination();
 
-  const tours = await features.query;
+  const tours = await features.query.populate('guides');
 
   res.status(200).json({
     status: 'success',
@@ -48,7 +48,9 @@ exports.getAllTours = catchCaAsync(async (req, res) => {
 exports.getATour = catchCaAsync(async (req, res, next) => {
   const tourID = req.params.tourID;
 
-  const tour = await Tour.findById(tourID);
+  const tour = await Tour.findById(tourID)
+    .populate('guides')
+    .populate('reviews');
 
   if (!tour) {
     return next(
@@ -194,3 +196,33 @@ exports.getMonthlyPlan = async (req, res, next) => {
     data: { stats },
   });
 };
+
+exports.getTourWithinDistance = catchCaAsync(
+  async function (req, res, next) {
+    const { distance, latlng, unit } = req.params;
+    const [lat, lng] = latlng.split(',');
+    const radius =
+      unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
+
+    if (!lat || !lng) {
+      return next(
+        new AppError('Invalid latitude or longitude', 400)
+      );
+    }
+
+    // find tours within a distance of a given point
+    const tours = await Tour.find({
+      startLocation: {
+        $geoWithin: {
+          $centerSphere: [[lng, lat], radius],
+        },
+      },
+    });
+
+    res.status(200).json({
+      status: 'success',
+      results: tours.length,
+      data: { tours },
+    });
+  }
+);
